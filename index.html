@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salone｜一人サロンのAI集客ツール</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #F5F0E8;
+    --beige: #E8DFD0;
+    --warm: #C4A882;
+    --dark: #2C2420;
+    --mid: #7A6A5A;
+    --gold: #B8965A;
+    --white: #FDFAF5;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--white);
+    color: var(--dark);
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 20px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(253,250,245,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(196,168,130,0.2);
+  }
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px; font-weight: 300; letter-spacing: 0.12em;
+    color: var(--dark);
+  }
+  .logo span { color: var(--gold); }
+  nav a {
+    font-size: 13px; letter-spacing: 0.08em; color: var(--mid);
+    text-decoration: none; transition: color 0.3s;
+  }
+  nav a:hover { color: var(--gold); }
+  .nav-cta {
+    background: var(--dark); color: var(--white) !important;
+    padding: 10px 24px; font-size: 12px; letter-spacing: 0.1em;
+    transition: background 0.3s !important;
+  }
+  .nav-cta:hover { background: var(--gold) !important; color: var(--white) !important; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 120px 40px 80px;
+    position: relative; overflow: hidden;
+    background: var(--cream);
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -20%; right: -10%;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(196,168,130,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: -10%; left: -5%;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(184,150,90,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero-inner {
+    max-width: 1100px; margin: 0 auto; width: 100%;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+    position: relative; z-index: 1;
+  }
+  .hero-tag {
+    display: inline-block;
+    font-size: 11px; letter-spacing: 0.15em; color: var(--gold);
+    border: 1px solid var(--gold); padding: 6px 16px;
+    margin-bottom: 28px;
+  }
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(42px, 5vw, 64px);
+    font-weight: 300; line-height: 1.25;
+    letter-spacing: 0.02em;
+    margin-bottom: 24px;
+  }
+  .hero h1 em { font-style: italic; color: var(--gold); }
+  .hero-sub {
+    font-size: 15px; line-height: 1.9; color: var(--mid);
+    margin-bottom: 40px;
+  }
+  .hero-cta {
+    display: inline-block;
+    background: var(--dark); color: var(--white);
+    padding: 18px 40px; font-size: 13px; letter-spacing: 0.12em;
+    text-decoration: none; transition: all 0.3s;
+    position: relative; overflow: hidden;
+  }
+  .hero-cta::after {
+    content: ''; position: absolute;
+    top: 0; left: -100%; width: 100%; height: 100%;
+    background: var(--gold); transition: left 0.4s ease;
+    z-index: -1;
+  }
+  .hero-cta:hover::after { left: 0; }
+  .hero-cta:hover { color: var(--white); }
+  .hero-note { font-size: 12px; color: var(--mid); margin-top: 14px; letter-spacing: 0.05em; }
+
+  .hero-visual {
+    position: relative;
+  }
+  .hero-card {
+    background: var(--white);
+    border: 1px solid rgba(196,168,130,0.3);
+    padding: 32px;
+    animation: float 6s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  .card-label {
+    font-size: 10px; letter-spacing: 0.15em; color: var(--gold);
+    margin-bottom: 16px;
+  }
+  .card-text {
+    font-size: 14px; line-height: 1.9; color: var(--dark);
+    border-left: 2px solid var(--gold); padding-left: 16px;
+    margin-bottom: 20px;
+  }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tag {
+    font-size: 11px; padding: 4px 12px;
+    background: var(--cream); color: var(--mid);
+    letter-spacing: 0.05em;
+  }
+  .hero-badge {
+    position: absolute; top: -20px; right: -20px;
+    background: var(--gold); color: var(--white);
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-size: 10px; letter-spacing: 0.05em; text-align: center;
+    line-height: 1.4;
+  }
+
+  /* PROBLEMS */
+  .problems {
+    padding: 100px 40px;
+    background: var(--white);
+  }
+  .section-label {
+    font-size: 11px; letter-spacing: 0.2em; color: var(--gold);
+    margin-bottom: 16px; display: block;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 300; line-height: 1.3;
+    margin-bottom: 60px;
+  }
+  .problems-inner { max-width: 1100px; margin: 0 auto; }
+  .problems-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px;
+  }
+  .problem-item {
+    background: var(--cream);
+    padding: 36px 40px;
+    display: flex; align-items: flex-start; gap: 20px;
+    transition: background 0.3s;
+  }
+  .problem-item:hover { background: var(--beige); }
+  .problem-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px; font-weight: 300; color: var(--warm);
+    line-height: 1; flex-shrink: 0;
+  }
+  .problem-text { font-size: 15px; line-height: 1.8; color: var(--dark); padding-top: 6px; }
+
+  /* FEATURES */
+  .features {
+    padding: 100px 40px;
+    background: var(--dark);
+    color: var(--white);
+  }
+  .features-inner { max-width: 1100px; margin: 0 auto; }
+  .features .section-label { color: var(--gold); }
+  .features .section-title { color: var(--white); }
+  .features-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+    margin-top: 60px;
+  }
+  .feature-card {
+    background: rgba(255,255,255,0.04);
+    padding: 40px 32px;
+    border: 1px solid rgba(196,168,130,0.15);
+    transition: all 0.3s;
+  }
+  .feature-card:hover {
+    background: rgba(196,168,130,0.08);
+    border-color: rgba(196,168,130,0.4);
+    transform: translateY(-4px);
+  }
+  .feature-icon {
+    font-size: 28px; margin-bottom: 20px; display: block;
+  }
+  .feature-title {
+    font-size: 16px; font-weight: 500; margin-bottom: 12px;
+    color: var(--white); letter-spacing: 0.05em;
+  }
+  .feature-desc { font-size: 13px; line-height: 1.9; color: rgba(255,255,255,0.55); }
+
+  /* PRICE */
+  .price {
+    padding: 100px 40px;
+    background: var(--cream);
+  }
+  .price-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+  .price-cards {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 2px; margin-top: 60px;
+  }
+  .price-card {
+    background: var(--white);
+    padding: 48px 32px;
+    border: 1px solid rgba(196,168,130,0.2);
+    position: relative; transition: all 0.3s;
+  }
+  .price-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(44,36,32,0.1); }
+  .price-card.featured {
+    background: var(--dark); color: var(--white);
+    border-color: var(--dark);
+  }
+  .price-card.featured .price-name { color: var(--gold); }
+  .price-card.featured .price-desc { color: rgba(255,255,255,0.6); }
+  .price-card.featured .price-features li { color: rgba(255,255,255,0.75); }
+  .price-card.featured .price-features li::before { color: var(--gold); }
+  .featured-badge {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--gold); color: var(--white);
+    font-size: 10px; letter-spacing: 0.1em; padding: 4px 16px;
+  }
+  .price-name { font-size: 13px; letter-spacing: 0.15em; color: var(--mid); margin-bottom: 20px; }
+  .price-amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px; font-weight: 300; line-height: 1;
+    margin-bottom: 4px;
+  }
+  .price-unit { font-size: 13px; color: var(--mid); margin-bottom: 24px; }
+  .price-card.featured .price-unit { color: rgba(255,255,255,0.5); }
+  .price-desc { font-size: 13px; color: var(--mid); margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid rgba(196,168,130,0.2); }
+  .price-features { list-style: none; text-align: left; }
+  .price-features li {
+    font-size: 13px; color: var(--mid); padding: 8px 0;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .price-features li::before { content: '✦'; color: var(--gold); font-size: 10px; flex-shrink: 0; }
+
+  /* CTA */
+  .cta-section {
+    padding: 100px 40px;
+    background: var(--white); text-align: center;
+  }
+  .cta-section .section-title { margin-bottom: 16px; }
+  .cta-sub { font-size: 15px; color: var(--mid); margin-bottom: 40px; line-height: 1.8; }
+  .cta-btn {
+    display: inline-block;
+    background: var(--gold); color: var(--white);
+    padding: 20px 56px; font-size: 14px; letter-spacing: 0.12em;
+    text-decoration: none; transition: all 0.3s;
+  }
+  .cta-btn:hover { background: var(--dark); }
+  .cta-note { font-size: 12px; color: var(--mid); margin-top: 16px; }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark); color: rgba(255,255,255,0.4);
+    padding: 40px; text-align: center;
+    font-size: 12px; letter-spacing: 0.08em;
+  }
+  footer .logo { color: var(--white); font-size: 20px; margin-bottom: 16px; display: block; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+    .hero-visual { display: none; }
+    .problems-grid { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr; }
+    .price-cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Sal<span>o</span>ne</div>
+  <div style="display:flex;gap:32px;align-items:center;">
+    <a href="#features">機能</a>
+    <a href="#price">料金</a>
+    <a href="#price" class="nav-cta">無料で試す</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">AI SALON MARKETING TOOL</div>
+      <h1>集客も投稿も、<br><em>AIにおまかせ。</em></h1>
+      <p class="hero-sub">
+        一人でサロンを経営するあなたへ。<br>
+        毎日のInstagram投稿・予約返信・口コミ対応を<br>
+        AIが丸ごと自動で作ります。
+      </p>
+      <a href="#price" class="hero-cta">14日間 無料で試す</a>
+      <p class="hero-note">クレジットカード不要 · いつでも解約OK</p>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-badge">14日間<br>無料</div>
+      <div class="hero-card">
+        <div class="card-label">AI が生成した投稿文</div>
+        <div class="card-text">
+          今日のネイルデザインが完成しました✨<br>
+          秋らしいボルドーとテラコッタのグラデーション。<br>
+          お客様から「また来たい」と言っていただけて<br>
+          本当に嬉しかったです🍂
+        </div>
+        <div class="card-tags">
+          <span class="tag">#ネイルサロン</span>
+          <span class="tag">#一人サロン</span>
+          <span class="tag">#秋ネイル</span>
+          <span class="tag">#名古屋ネイル</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEMS -->
+<section class="problems">
+  <div class="problems-inner">
+    <span class="section-label">PROBLEM</span>
+    <h2 class="section-title">こんなお悩み、ありませんか？</h2>
+    <div class="problems-grid">
+      <div class="problem-item">
+        <div class="problem-num">01</div>
+        <div class="problem-text">毎日のInstagram投稿が<br>思いつかなくて後回しにしてしまう</div>
+      </div>
+      <div class="problem-item">
+        <div class="problem-num">02</div>
+        <div class="problem-text">施術中に予約・問い合わせが来ても<br>返信できずお客様を逃してしまう</div>
+      </div>
+      <div class="problem-item">
+        <div class="problem-num">03</div>
+        <div class="problem-text">口コミへの返信文が<br>毎回思い浮かばず時間がかかる</div>
+      </div>
+      <div class="problem-item">
+        <div class="problem-num">04</div>
+        <div class="problem-text">集客に時間を使いすぎて<br>本来の技術を磨く時間がない</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="features-inner">
+    <span class="section-label">FEATURES</span>
+    <h2 class="section-title" style="color:var(--white)">Saloneでできること</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">✦</span>
+        <div class="feature-title">Instagram投稿を毎日自動生成</div>
+        <div class="feature-desc">サロン名とメニューを登録するだけで、毎日の投稿文とハッシュタグをAIが自動で作成。コピペして投稿するだけです。</div>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">✦</span>
+        <div class="feature-title">予約・問い合わせ返信を自動作成</div>
+        <div class="feature-desc">受け取ったメッセージをペーストするだけで、丁寧な返信文を3秒で生成。施術中でもすぐに対応できます。</div>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">✦</span>
+        <div class="feature-title">口コミ返信を自動生成</div>
+        <div class="feature-desc">Googleマップやホットペッパーの口コミに、温かみのあるお礼文を自動で生成。返信率を高めて信頼につなげます。</div>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">✦</span>
+        <div class="feature-title">月間投稿カレンダーを一括作成</div>
+        <div class="feature-desc">「今月はバレンタインキャンペーンを打ちたい」と入力するだけで、1ヶ月分の投稿スケジュールと文章を自動生成。</div>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">✦</span>
+        <div class="feature-title">キャンペーン文章を自動作成</div>
+        <div class="feature-desc">季節やイベントに合わせたキャンペーン告知文を自動生成。集客の波を作るお手伝いをします。</div>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">✦</span>
+        <div class="feature-title">あなたのサロンに最適化</div>
+        <div class="feature-desc">一度登録したサロン情報をもとに、あなたのサロンのトーンや雰囲気に合った文章を毎回生成します。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICE -->
+<section class="price" id="price">
+  <div class="price-inner">
+    <span class="section-label">PRICING</span>
+    <h2 class="section-title">シンプルな料金プラン</h2>
+    <div class="price-cards">
+      <div class="price-card">
+        <div class="price-name">LIGHT</div>
+        <div class="price-amount">980</div>
+        <div class="price-unit">円 / 月（税込）</div>
+        <div class="price-desc">まず試してみたい方へ</div>
+        <ul class="price-features">
+          <li>投稿文生成（1日3本まで）</li>
+          <li>ハッシュタグ自動生成</li>
+          <li>メールサポート</li>
+        </ul>
+      </div>
+      <div class="price-card featured">
+        <div class="featured-badge">人気No.1</div>
+        <div class="price-name">STANDARD</div>
+        <div class="price-amount" style="color:var(--gold)">1,980</div>
+        <div class="price-unit">円 / 月（税込）</div>
+        <div class="price-desc">一人サロンオーナーに最適</div>
+        <ul class="price-features">
+          <li>投稿文生成（無制限）</li>
+          <li>予約・返信文の自動生成</li>
+          <li>口コミ返信の自動生成</li>
+          <li>月間カレンダー作成</li>
+          <li>優先サポート</li>
+        </ul>
+      </div>
+      <div class="price-card">
+        <div class="price-name">PRO</div>
+        <div class="price-amount">4,980</div>
+        <div class="price-unit">円 / 月（税込）</div>
+        <div class="price-desc">さらに本格的に使いたい方へ</div>
+        <ul class="price-features">
+          <li>STANDARDの全機能</li>
+          <li>キャンペーン文章作成</li>
+          <li>個別相談（月1回）</li>
+          <li>新機能の優先利用</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <span class="section-label">FREE TRIAL</span>
+  <h2 class="section-title">まず14日間、無料でお試しください。</h2>
+  <p class="cta-sub">クレジットカード不要。いつでも解約できます。<br>登録から3分で使い始められます。</p>
+  <a href="#" class="cta-btn">無料トライアルをはじめる</a>
+  <p class="cta-note">※現在ベータ版につき、先着順でご案内しています</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="logo">Sal<span style="color:var(--gold)">o</span>ne</span>
+  <p>© 2025 Salone. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
