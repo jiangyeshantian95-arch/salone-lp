@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0047)file:///C:/Users/Go2/Downloads/salone-full.html -->
+<!-- saved from url=(0049)file:///C:/Users/Go2/Downloads/salone-full_1.html -->
 <html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -470,8 +470,8 @@ header{background:var(--white);border-bottom:1px solid var(--border);padding:0 3
       <div class="card">
         <div class="card-b" style="padding:0;">
           <table class="table" id="res-table">
-            <thead><tr><th>日時</th><th>お客様</th><th>メニュー</th><th>料金</th><th>ステータス</th><th></th></tr></thead>
-            <tbody id="res-tbody"><tr><td colspan="6" style="text-align:center;color:var(--mid);padding:32px;">予約がありません</td></tr></tbody>
+            <thead><tr><th>日時</th><th>お客様</th><th>メニュー</th><th>料金</th><th>ステータス</th><th>売上連携</th><th></th></tr></thead>
+            <tbody id="res-tbody"><tr><td colspan="7" style="text-align:center;color:var(--mid);padding:32px;">予約がありません</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -890,19 +890,46 @@ function deleteReservation(id) {
   notify('予約を削除しました');
 }
 
+function completeReservation(id) {
+  const r = db.reservations.find(r => r.id === id);
+  if (!r) return;
+  if (!confirm(`${r.name}様の予約を完了して売上に記録しますか？`)) return;
+  // 売上に自動転記
+  db.sales.push({
+    id: Date.now(),
+    date: r.date,
+    menu: r.menu,
+    amount: r.price,
+    customer: r.name
+  });
+  db.sales.sort((a, b) => a.date < b.date ? 1 : -1);
+  // 予約のステータスを完了に
+  r.status = 'completed';
+  save();
+  renderReservations();
+  renderSales();
+  renderDashboard();
+  notify(`¥${r.price.toLocaleString()} を売上に記録しました`);
+}
+
 function renderReservations() {
   const tbody = document.getElementById('res-tbody');
   if (!db.reservations.length) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--mid);padding:32px;">予約がありません</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--mid);padding:32px;">予約がありません</td></tr>';
     return;
   }
   tbody.innerHTML = db.reservations.map(r => `
-    <tr>
+    <tr style="${r.status === 'completed' ? 'opacity:0.5;' : ''}">
       <td>${r.date} ${r.time}</td>
       <td>${escH(r.name)}</td>
       <td>${escH(r.menu)}</td>
       <td>¥${r.price.toLocaleString()}</td>
-      <td><span class="badge badge-green">確定</span></td>
+      <td>${r.status === 'completed'
+        ? '<span class="badge badge-gray">完了</span>'
+        : '<span class="badge badge-green">確定</span>'}</td>
+      <td>${r.status !== 'completed'
+        ? `<button class="btn btn-primary btn-sm" onclick="completeReservation(${r.id})">完了→売上</button>`
+        : '<span style="font-size:11px;color:var(--mid);">転記済み</span>'}</td>
       <td><button class="btn btn-outline btn-sm" onclick="deleteReservation(${r.id})">削除</button></td>
     </tr>`).join('');
 }
